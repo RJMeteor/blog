@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <trees>
+     <tree path="/src/components/background" title="后台数据"/>
+     <tree path="/src/components/home/article" title="文章"/>
+     <tree path="/src/components/home/creation" title="创作"/>
+     <tree path="/src/components/home/favorite" title="收藏"/>
+     <tree path="/src/components/home/messagecenter" title="消息中心"/>
+     <tree path="/src/components/home/messagecenter/articlepush" title="文章推送"/>
+     <tree path="/src/components/home/messagecenter/attention" title="关注推送"/>
+     <tree path="/src/components/home/messagecenter/commentlike" title="评论/点赞推送"/>
+     <tree path="/src/components/home/messagecenter/privateletter" title="私信消息推送"/>
+     <tree path="/src/components/home/messagecenter/Modal.vue" title="消息中心布局组件" extension="vue"/>
+     <tree path="/src/components/homepage" title="个人主页"/>
+    <tree path="/src/define/components/Modal.vue" title="聊天框组件" extension="vue"/>
+    <tree path="/src/components/home/article/Reader.vue" title="文章浏览组件" extension="vue"/>
+    <tree path="/src/components/background/dataanalysis" title="数据分析"/>
+    <tree path="/src/components/background/followfans" title="关注/粉丝"/>
+    <tree path="/src/components/background/personaldetails" title="个人信息"/>
+    <tree path="/src/components/home/messagecenter/like" title="点赞"/>
+    <tree path="/src/components/home/messagecenter/comment" title="评论"/>
+</trees>

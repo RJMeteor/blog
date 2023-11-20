@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogCommentMapper">
+    <sql id="selectApply">
+    select id,
+            user_id,
+            stated,
+            comment_key_id,
+            person_id,
+            article_id,
+            comment_content_mapping_id,
+            create_time,
+            update_time,
+            active
+    from  blog_comment
+</sql>
+    <resultMap id="chatListResultMap" type="com.personal.blog.pojo.BlogComment">
+        <association property="user" column="user_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="personUser" column="person_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="article" column="article_id"
+                     select="com.personal.blog.mapper.BlogArticleMapper.singleArticleAsSimpleness"/>
+        <association property="commentContentMapping" column="comment_content_mapping_id"
+                     select="com.personal.blog.mapper.BlogCommentContentMappingMapper.contentInfo"/>
+    </resultMap>
+    <select id="chatList" resultMap="chatListResultMap">
+        <include refid="selectApply"/>
+        where person_id=#{userId} and deleted=0
+    </select>
+    <select id="commentListAsActive" resultMap="chatListResultMap">
+        <include refid="selectApply"/>
+        where person_id=#{userId} and deleted=0 and active=0
+<!--        and article_id in-->
+<!--        <foreach collection="list" open="(" close=")" separator="," item="ele">-->
+<!--            #{ele}-->
+<!--        </foreach>-->
+    </select>
+    <select id="articleAsComment" resultMap="chatListResultMap">
+        <include refid="selectApply"/>
+        where article_id=#{articleId} and deleted=0
+    </select>
+
+    <select id="getSingleComment" resultMap="chatListResultMap">
+        <include refid="selectApply"/>
+        where id=#{commentId} and deleted=0
+    </select>
+
+    <insert id="addComment"
+            useGeneratedKeys="true"
+            keyColumn="id"
+            keyProperty="id"
+            parameterType="com.personal.blog.pojo.BlogComment"
+    >
+       insert into blog_comment(
+            person_id,
+            user_id,
+            article_id,
+            comment_content_mapping_id,
+            comment_key_id,
+            create_time,
+            update_time
+            )
+            values (#{personId},#{userId},#{articleId},#{commentContentMappingId},#{commentKeyId},now(),now())
+    </insert>
+</mapper>

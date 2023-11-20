@@ -1,0 +1,7 @@
+@font-face {
+    font-family: "renjia";
+    font-weight: 400;
+    src: url("./AlimamaDongFangDaKai-Regular.woff2") format("woff2"),
+    url("./AlimamaDongFangDaKai-Regular.woff") format("woff");
+    font-display: swap;
+}

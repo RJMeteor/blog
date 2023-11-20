@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogChattingRecordsContentMappingMapper">
+    <sql id="selectApply">
+    select id,
+            chatting_records_content
+    from blog_chatting_records_content_mapping
+</sql>
+    <select id="contentInfo" resultType="com.personal.blog.pojo.BlogChattingRecordsContentMapping">
+        <include refid="selectApply"/>
+        where id=#{id}
+    </select>
+    <insert
+            id="insertChattingRecordsContent"
+            useGeneratedKeys="true"
+            parameterType="com.personal.blog.pojo.BlogChattingRecordsContentMapping"
+            keyProperty="id"
+            keyColumn="id">
+        insert into blog_chatting_records_content_mapping(chatting_records_content)
+        values(#{chattingRecordsContent})
+    </insert>
+</mapper>

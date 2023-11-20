@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogUserMapper">
+    <sql id="selectApply">
+         select id,user_name,user_pass,user_phone,user_sex,user_image,user_art_id,user_intro,create_time
+        from blog_user
+    </sql>
+    <select id="articleContent" resultType="com.personal.blog.pojo.BlogUser">
+        <include refid="selectApply"/>
+        where id=#{user_id} and deleted=0
+    </select>
+
+    <resultMap id="information" type="com.personal.blog.cover.BlogUserCover">
+        <association property="attention" column="id" select="com.personal.blog.mapper.BlogAttentionMapper.userIdAscount"/>
+        <association property="attentionAsId" column="id" select="com.personal.blog.mapper.BlogAttentionMapper.attentionAsId"/>
+        <association property="fans" column="id" select="com.personal.blog.mapper.BlogFansMapper.userIdAscount"/>
+        <association property="browse" column="id" select="com.personal.blog.mapper.BlogLikeMapper.userIdAscountBrowse"/>
+        <association property="article" column="id" select="com.personal.blog.mapper.BlogArticleMapper.userIdAscount"/>
+        <association property="favorite" column="id" select="com.personal.blog.mapper.BlogFavoriteMapper.userIdAscount"/>
+        <association property="praise" column="id" select="com.personal.blog.mapper.BlogLikeMapper.userIdAscountLike"/>
+        <association property="blogUser" column="id" select="articleContent"/>
+        <collection property="blogArtList" column="id" select="com.personal.blog.mapper.BlogArtMapper.blogArtList"/>
+    </resultMap>
+
+    <select id="informationView" resultMap="information">
+        <include refid="selectApply"/>
+        where id=#{user_id} and deleted=0
+    </select>
+
+    <insert id="insertUserInfo" parameterType="com.personal.blog.pojo.BlogUser" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into blog_user(user_name,user_pass,user_phone,user_intro,create_time)
+        values(#{userName},#{userPass},#{userPhone},#{userIntro},now())
+    </insert>
+</mapper>

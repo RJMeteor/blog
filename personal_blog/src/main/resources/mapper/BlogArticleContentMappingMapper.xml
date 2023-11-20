@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogArticleContentMappingMapper">
+    <insert id="saveContent"
+            useGeneratedKeys="true"
+            keyColumn="id"
+            keyProperty="id"
+            parameterType="com.personal.blog.pojo.BlogArticleContentMapping">
+    insert
+    into blog_article_content_mapping(article_content_not_html,article_content,md_content)
+    values (
+        #{articleContentNotHtml},
+        #{articleContent},
+        #{mdContent}
+    )
+</insert>
+
+    <resultMap id="articleContentResultMap" type="com.personal.blog.pojo.BlogArticleContentMapping">
+        <association property="article" column="id" select="com.personal.blog.mapper.BlogArticleMapper.articleContentAsArticle"></association>
+    </resultMap>
+    <select id="articleContent" resultMap="articleContentResultMap">
+        select id,article_content_not_html,article_content,md_content
+        from blog_article_content_mapping
+        where id=#{article_content_mapping_id}
+    </select>
+</mapper>

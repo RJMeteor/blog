@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogAttentionMapper">
+    <sql id="selectApply">
+         select id,user_id,stated,attention_user_id,create_time,update_time,active
+        from blog_attention
+    </sql>
+
+    <select id="userIdAscount" resultType="long">
+        select count(1)
+        from blog_attention
+        where user_id=#{id} and deleted=0
+    </select>
+    <select id="attentionAsId" resultType="long">
+        select user_id
+        from blog_attention
+        where attention_user_id=#{id} and deleted=0
+    </select>
+
+    <resultMap id="attentionListResultMap" type="com.personal.blog.pojo.BlogAttention">
+        <association property="user" column="user_id" select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="attentionUser" column="attention_user_id" select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+    </resultMap>
+    <select id="attentionList" resultMap="attentionListResultMap">
+        <include refid="selectApply"/>
+        where user_id=#{userId} and deleted=0
+    </select>
+
+    <select id="attentionListAsActvie" resultMap="attentionListResultMap">
+        <include refid="selectApply"/>
+        where user_id=#{userId} and deleted=0 and active=0
+        order by create_time desc
+    </select>
+
+    <select id="attentionMessage" parameterType="com.personal.blog.pojo.BlogAttention" resultMap="attentionListResultMap">
+        <include refid="selectApply"/>
+        where user_id,stated=#{userId} and attention_user_id=#{attentionUserId} and deleted=0
+    </select>
+</mapper>

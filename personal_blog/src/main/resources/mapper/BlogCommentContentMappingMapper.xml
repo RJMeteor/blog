@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogCommentContentMappingMapper">
+    <sql id="selectApply">
+    select id,
+            comment_content
+    from blog_comment_content_mapping
+</sql>
+    <select id="contentInfo" resultType="com.personal.blog.pojo.BlogCommentContentMapping">
+        <include refid="selectApply"/>
+        where id=#{id}
+    </select>
+    <insert id="sendComment"
+            useGeneratedKeys="true"
+            keyColumn="id"
+            keyProperty="id"
+            parameterType="com.personal.blog.pojo.BlogCommentContentMapping">
+        insert into blog_comment_content_mapping(comment_content) values (#{commentContent})
+    </insert>
+</mapper>

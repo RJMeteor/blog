@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogArticleMapper">
+    <sql id="selectApply">
+         select id,user_id,article_title,article_content_mapping_id,create_time,update_time
+        from blog_article
+    </sql>
+
+    <select id="userIdAscount" resultType="long">
+        select count(1)
+        from blog_article
+        where user_id=#{id} and deleted=0
+    </select>
+
+
+    <resultMap id="article" type="com.personal.blog.pojo.BlogArticle">
+        <association property="blogArticleContentMapping" column="article_content_mapping_id"
+                     select="com.personal.blog.mapper.BlogArticleContentMappingMapper.articleContent"/>
+        <association property="blogUser" column="user_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="like" column="id"
+                     select="com.personal.blog.mapper.BlogLikeMapper.articleContentLike"/>
+        <association property="browse" column="id"
+                     select="com.personal.blog.mapper.BlogLikeMapper.articleContentBrowse"/>
+        <collection property="blogCommentList" column="id"
+                    select="com.personal.blog.mapper.BlogCommentMapper.articleAsComment"></collection>
+        <collection property="favoriteNameList" column="id"
+                    select="com.personal.blog.mapper.BlogFavoriteMapper.favoriteNameList"></collection>
+    </resultMap>
+
+    <resultMap id="articleAsUserInfo" type="com.personal.blog.pojo.BlogArticle">
+        <association property="blogArticleContentMapping" column="article_content_mapping_id"
+                     select="com.personal.blog.mapper.BlogArticleContentMappingMapper.articleContent"/>
+        <association property="blogUserCover" column="user_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.informationView"/>
+        <association property="like" column="id"
+                     select="com.personal.blog.mapper.BlogLikeMapper.articleContentLike"/>
+        <association property="browse" column="id"
+                     select="com.personal.blog.mapper.BlogLikeMapper.articleContentBrowse"/>
+    </resultMap>
+
+    <select id="articleList" resultMap="articleAsUserInfo">
+        <include refid="selectApply"/>
+        where deleted=0 and user_id=#{userId}
+        order by update_time desc
+        limit #{page},#{pageSize}
+    </select>
+
+    <select id="articles" resultMap="article">
+        <include refid="selectApply"/>
+        where deleted=0 and article_title like concat("%",#{name},"%")
+        order by create_time desc
+        limit #{page},#{pageSize}
+    </select>
+
+    <select id="singleArticle" resultMap="article">
+        <include refid="selectApply"/>
+        where deleted=0 and id=#{id}
+    </select>
+
+    <select id="singleArticleAsSimpleness" resultType="com.personal.blog.pojo.BlogArticle">
+        <include refid="selectApply"/>
+        where deleted=0 and id=#{id}
+    </select>
+
+    <select id="articleContentAsArticle" resultType="com.personal.blog.pojo.BlogArticle">
+        <include refid="selectApply"/>
+        where deleted=0 and article_content_mapping_id=#{articleCommentId}
+    </select>
+
+    <select id="articleToId" parameterType="com.personal.blog.pojo.BlogArticle" resultType="long">
+         select id
+        from blog_article
+        where deleted=0 and article_content_mapping_id=#{articleContentMappingId} and user_id=#{userId}
+    </select>
+
+
+
+</mapper>

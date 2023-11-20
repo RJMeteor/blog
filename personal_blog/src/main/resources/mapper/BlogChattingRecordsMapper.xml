@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogChattingRecordsMapper">
+    <sql id="selectApply">
+    select id,
+            sender_user_id,
+            acceptor_user_id,
+            chatting_records_content_mapping_id,
+            reade_status,
+            create_time,
+            update_time,
+            active
+    from  blog_chatting_records
+    </sql>
+    <resultMap id="chatListResultMap" type="com.personal.blog.pojo.BlogChattingRecords">
+        <association property="senderUser" column="sender_user_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="acceptorUser" column="acceptor_user_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="chattingRecordsContentMapping" column="chatting_records_content_mapping_id"
+                     select="com.personal.blog.mapper.BlogChattingRecordsContentMappingMapper.contentInfo"/>
+    </resultMap>
+    <select id="chatListAsActive" resultMap="chatListResultMap">
+        <if test="flag">
+            <include refid="selectApply"/>
+        </if>
+        <if test="!flag">
+            select id from blog_chatting_records
+        </if>
+        where ((acceptor_user_id=#{userId} and sender_user_id=#{sendUserId}) or (acceptor_user_id=#{sendUserId} and
+        sender_user_id=#{userId})) and deleted=0
+        <if test="flag">
+            and active=0
+        </if>
+        ORDER BY create_time desc
+        LIMIT 0,1
+    </select>
+    <select id="singleChatList" resultMap="chatListResultMap">
+        <include refid="selectApply"/>
+        where ((acceptor_user_id=#{userId} and sender_user_id=#{sendUserId}) or (acceptor_user_id=#{sendUserId} and
+        sender_user_id=#{userId})) and deleted=0
+        order by create_time asc
+    </select>
+    <select id="inserSingleChat" resultMap="chatListResultMap">
+        <include refid="selectApply"/>
+        where acceptor_user_id=#{acceptorUserId} and sender_user_id=#{senderUserId} and
+        chatting_records_content_mapping_id=#{chattingRecordsContentMappingId} and deleted=0
+    </select>
+    <select id="messageUserIdList" resultType="long">
+        select distinct acceptor_user_id
+        from  blog_chatting_records
+    </select>
+</mapper>

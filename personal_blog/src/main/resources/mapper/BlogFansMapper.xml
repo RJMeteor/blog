@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogFansMapper">
+    <sql id="selectApply">
+         select id,user_id,fans_user_id,create_time,update_time
+        from blog_fans
+    </sql>
+
+    <select id="userIdAscount" resultType="long">
+        select count(1)
+        from blog_fans
+        where user_id=#{id} and deleted=0
+    </select>
+
+    <resultMap id="fansListResultMap" type="com.personal.blog.pojo.BlogFans">
+        <association property="user" column="user_id" select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="fansUser" column="fans_user_id" select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+    </resultMap>
+    <select id="fansList" resultMap="fansListResultMap">
+        <include refid="selectApply"/>
+        where user_id=#{userId} and deleted=0
+    </select>
+</mapper>

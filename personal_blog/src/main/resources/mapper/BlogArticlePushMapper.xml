@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogArticlePushMapper">
+    <sql id="selectApply">
+    select id,
+            article_id,
+            accept_user_id,
+            send_user_id,
+            reade_status,
+            create_time,
+            update_time
+    from blog_article_push
+</sql>
+    <resultMap id="artclePushResultMap" type="com.personal.blog.pojo.BlogArticlePush">
+        <association property="acceptUser" column="accept_user_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="sendUser" column="send_user_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="article" column="article_id"
+                     select="com.personal.blog.mapper.BlogArticleMapper.singleArticle"/>
+    </resultMap>
+    <select id="artclePush" resultMap="artclePushResultMap">
+        <include refid="selectApply"/>
+        where deleted=0 and accept_user_id=#{userId}
+        order by  create_time desc
+    </select>
+
+    <select id="addArtcleAsPush" parameterType="com.personal.blog.pojo.BlogArticlePush" resultMap="artclePushResultMap">
+        <include refid="selectApply"/>
+        where deleted=0 and  article_id=#{articleId} and accept_user_id=#{acceptUserId} and send_user_id=#{sendUserId}
+    </select>
+</mapper>

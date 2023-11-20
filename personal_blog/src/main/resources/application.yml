@@ -1,0 +1,28 @@
+server:
+  port: 9002
+spring:
+  application:
+    name: blog-9001
+#  redis:
+#    host: 192.168.94.131
+#    port: 6379
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+      password: ${renjia.password}
+      username: ${renjia.username}
+      url: ${renjia.url}
+      driver-class-name: ${renjia.driver}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+mybatis-plus:
+  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath:/mapper/*.xml

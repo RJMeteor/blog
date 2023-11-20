@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.personal.blog.mapper.BlogFavoriteMapper">
+    <sql id="selectApply">
+         select id,user_id,favorite_name,article_id,create_time,update_time
+        from blog_favorite
+    </sql>
+
+    <select id="userIdAscount" resultType="long">
+        select count(1)
+        from blog_favorite
+        where user_id=#{id} and deleted=0 and article_id!=0
+    </select>
+
+    <resultMap id="favoriteListResultMap" type="com.personal.blog.pojo.BlogFavorite">
+        <association property="user" column="user_id"
+                     select="com.personal.blog.mapper.BlogUserMapper.articleContent"/>
+        <association property="article" column="article_id"
+                     select="com.personal.blog.mapper.BlogArticleMapper.singleArticle"/>
+    </resultMap>
+    <select id="favoriteNameList" resultMap="favoriteListResultMap">
+        <include refid="selectApply"/>
+        where user_id=#{userId} and deleted=0 and favorite_name=#{favoriteName}
+        order by favorite_name desc
+        limit #{page},#{pageSize}
+    </select>
+
+    <select id="favoriteNameAsCount" resultType="com.personal.blog.cover.BlogFavoriteCover">
+        select favorite_name,count(favorite_name) as count_as_name
+        from blog_favorite
+        where user_id=#{userId}  and deleted=0
+        group by favorite_name
+    </select>
+
+    <select id="favoriteNameList" resultType="string">
+        select distinct favorite_name
+        from blog_favorite
+    </select>
+</mapper>
